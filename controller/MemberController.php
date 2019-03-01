@@ -8,10 +8,13 @@ use \My\model\ListManager;
 class MemberController{
     private $memberManager;
     private $listManager;
+    private $commentManager;
+    
 
     public function __construct(){
-        $this->adminManager = new MemberManager();
+        $this->memberManager = new MemberManager();
         $this->listManager = new ListManager();
+        $this->commentManager = new CommentManager();
     }
 
     public function listRecipes()
@@ -21,5 +24,23 @@ class MemberController{
 
         // pour recuperer l'info (les données)on appelle la page html concernée (require)
         require 'view/indexView.php';
+    }
+    public function oneRecipe($id)
+    {
+        $one = $this->listManager->getRecipe($id);
+        $ingredients = $this->listManager->getIngredients($id);
+
+        $comments = $this->commentManager->getComments($id);
+
+        require 'view/recipeView.php';
+    }
+    public function putComment($id_recipe, $id_member, $content)
+    {
+        $newComment = $this->commentManager->addComment($id_recipe, $id_member, $content);
+        header('Location: index.php?action=recipe&id=' . $id_recipe);
+    }
+    public function prepareRecipe(){
+        $newRecipe = $this->listManager->prepRecipe();
+        require 'view/postRecipeView.php';
     }
 }

@@ -30,4 +30,11 @@ class ListManager extends Manager
         return $one;
 
     }
+    public function prepRecipe(){
+        $bdd = $this->dbConnect();
+        $all = $bdd->prepare('SELECT * FROM ingredients');
+        $all->execute(array());
+        return $all;
+    }
+
 }

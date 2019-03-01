@@ -1,8 +1,8 @@
 <?php
 namespace My\controller;
+
 use \My\controller\AdminController;
 use \My\controller\MemberController;
-
 
 class Router
 {
@@ -17,46 +17,45 @@ class Router
     public function run()
     {
         try {
-            
+
             if (isset($_GET['action'])) {
                 if ($_GET['action'] == 'listRecipes') {
-                    $this->controller->listRecipes();
-					
-					
+                    $this->controllerMember->listRecipes();
+
                 } elseif ($_GET['action'] == 'recipe') {
                     if (isset($_GET['id']) && $_GET['id'] > 0) {
-						$this->controller->oneRecipe($_GET['id']);
-						
-                    }else {
+                        $this->controllerMember->oneRecipe($_GET['id']);
+
+                    } else {
                         echo 'Erreur : aucun identifiant de la recette envoyé';
                     }
-                 } elseif ($_GET['action'] == 'putComment') {
-                        if (isset($_GET['id']) && $_GET['id'] > 0) {
-                            
-                            if (!empty($_POST['content'])) {
-                                
-                             $this->controller->putComment($_GET['id'],$_POST['id_member'],$_POST['content']);
-                            } else {
-                                throw new Exception('Impossible d\'ajouter le commentaire !');
-                            }
+                } elseif ($_GET['action'] == 'prepareRecipe') {
+                    $this->controllerMember->prepareRecipe();
+                    if (isset($_POST['valider'])) {
+                        echo 'Vous avez selectionné la ligne ' . $_POST['liste_ingredients'];
+                    }
+                } elseif ($_GET['action'] == 'putComment') {
+                    if (isset($_GET['id']) && $_GET['id'] > 0) {
+
+                        if (!empty($_POST['content'])) {
+
+                            $this->controllerMember->putComment($_GET['id'], $_POST['id_member'], $_POST['content']);
                         } else {
-                            throw new Exception('aucun identifiant de commentaire envoyé');
+                            throw new Exception('Impossible d\'ajouter le commentaire !');
                         }
+                    } else {
+                        throw new Exception('aucun identifiant de commentaire envoyé');
+                    }
+                } else {
+                    $this->controllerMember->listRecipes();
                 }
-                    
-                     
-                else {
-                    $this->controller->listRecipes();
-                }
-        
-            }else{
-                $this->controller->listRecipes();
+
+            } else {
+                $this->controllerMember->listRecipes();
             }
-            
+
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
         }
-                
-            catch (Exception $e) {
-                die('Erreur : ' . $e->getMessage());
-                }
-        }
-        }
+    }
+}
